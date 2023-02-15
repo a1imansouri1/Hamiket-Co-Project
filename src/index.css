@@ -1,0 +1,13 @@
+body {
+  margin: 0;
+  font-family: XBRoya
+}
+
+* {
+  font-family: XBRoya
+}
+
+@font-face {
+  font-family: 'XBRoya';
+  src: local('XBRoya'), url(../src/font/XBRoya.ttf) format('truetype');
+}
