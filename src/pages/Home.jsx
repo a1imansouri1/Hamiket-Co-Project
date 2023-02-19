@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
+import { useBetween } from "use-between";
+import useSharedFormState from "../components/useFormState";
 
-import { useForm } from "react-hook-form";
+
+import FormPr from '../components/FormPr';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,13 +31,11 @@ import IconButton from '@material-ui/core/IconButton';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import CssBaseline from '@mui/material/CssBaseline';
-import { incDecActions } from '../store/incDec';
 
-import squareRoundedPlus from '@iconify/icons-tabler/square-rounded-plus';
-import squareRoundedMinus from '@iconify/icons-tabler/square-rounded-minus';
 import { borderLeft, borderRight, color, minHeight } from '@mui/system';
 
 import Dropdown from 'react-bootstrap/Dropdown';
+
 
 const Home = () => {
 
@@ -353,7 +354,8 @@ const Home = () => {
 
 
 
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  // const [isExpanded, setIsExpanded] = React.useState(false);
+  const {isExpanded, setIsExpanded} = useSharedFormState();
 
   const ExpandableTableRow = ({ children, expandComponent, abc, ...otherProps }) => {
     // const [isExpanded, setIsExpanded] = React.useState(isExpanded1);
@@ -392,117 +394,15 @@ const Home = () => {
     );
   };
 
-  const FormPr = (props) => {
-    const { register, handleSubmit } = useForm();
-    const onSubmit = (data) => {
-      localStorage.setItem('newPriceSubmiited', data.a)
-      localStorage.setItem('newCountSubmiited', data.b)
-      console.log(data)
-    };
-    const priceee = props.item
-
-    const id = props.id
-
-
-
-    const incrementItem = () => {
-      dispatch(incDecActions.addItem({ id }))
-    }
-
-    const decreaseItem = () => {
-      dispatch(incDecActions.removeItem({ id }))
-    }
-
-    return (
-      <div className='allForm'>
-
-        <form className='d-flex align-items-center formPr' onSubmit={handleSubmit(onSubmit)}>
-          <input className='formInpSub' type="submit" value='به روزرسانی' />
-          {
-            <input className='formInpSub2'
-
-              onClick={() =>
-
-                setIsExpanded(false)
-
-              }
-
-              defaultValue='انصراف' readOnly />
-          }
-
-          <div className='parNewDiv'>
-            <span className='prTitle' placeholder='تومان'>قیمت جدید</span>
-            <div className='formInp3div'>
-              <span>تومان</span>
-              <input className='formInp3' {...register("newPrice")} />
-            </div>
-            <span className='prTitle'>موجودی جدید</span>
-            <div className='formInp4div'>
-              {countItemArr.length !== 0 ?
-                < Icon height={40} className='increase_btn' icon={squareRoundedMinus} color='6a6464' onClick={decreaseItem} />
-                :
-                < Icon height={40} className='increase_btn_' icon={squareRoundedMinus} onClick={decreaseItem} />
-              }
-              <input className='formInp4' {...register("newCountInStock")} defaultValue={
-                // newCount
-                countItemArr.map(item => item.quantity)
-                // quantity
-
-              } readOnly />
-              <Icon height={40} className='increase_btn' icon={squareRoundedPlus} color='6a6464' onClick={incrementItem} />
-            </div>
-
-          </div>
-
-        </form>
-
-        <div>
-          <div className='curPrSt'>
-            <span className='prTitle'>قیمت فعلی</span>
-            <input className='formInp2' placeholder={
-              // JSON.parse(localStorage.getItem('newPriceSubmiited')) ?
-              // JSON.parse(localStorage.getItem('newPriceSubmiited'))
-              // :
-              (priceee + ' ' + 'تومان')
-
-            } readOnly />
-            <span className='prTitle'>موجودی فعلی</span>
-            <input className='formInp2' placeholder={1} readOnly />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
 
 
   const SimpleTable = (propsT) => {
 
     const classes = useStyles();
 
-    const { register, handleSubmit } = useForm();
-    const onSubmit = (data) => {
-      localStorage.setItem('newPriceSubmiited', data.a)
-      localStorage.setItem('newCountSubmiited', data.b)
-      console.log(data)
-    };
-    // const priceee = props.item
 
-    // const id = props.id
 
-    const countItemArr = useSelector(state => state.incDec.countItemArr)
 
-    // const id = data.map(item => item.id)
-    // const id = 260
-    // console.log(id)
-
-    const incrementItem = (id) => {
-      dispatch(incDecActions.addItem(id))
-    }
-
-    const decreaseItem = (id) => {
-      dispatch(incDecActions.removeItem(id))
-    }
 
     return (
       <ThemeProvider theme={theme}>
@@ -545,9 +445,15 @@ const Home = () => {
                           <TableCell colSpan="7">
 
                             {/* {item.stockStatus == 3 ? */}
-                            <FormPr item={item.price} id={item.id} />
-                          
+                            <FormPr item={item.price} id={item.id} qty={
+                              countItemArr.map((ele, i) => {
+                                return (
+                                  ele.id == item.id ? ele.quantity : null
+                                )
+                              }).find(element => element ? element : null)
+                            }
 
+                            />
 
 
 
