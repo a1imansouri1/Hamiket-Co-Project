@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
-import { useBetween } from "use-between";
-import useSharedFormState from "../components/useFormState";
-
-
-import FormPr from '../components/FormPr';
+import useSharedFormState from "../component/useFormState";
+import FormPr from '../component/FormPr'
 
 import { useDispatch, useSelector } from 'react-redux';
 
